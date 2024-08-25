@@ -1,39 +1,16 @@
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useState } from 'react';
+import { uploadAvatar } from '../../api/auth';
 
-const API_BASE_URL = import.meta.env.VITE_BACKEND_URL || "";
 
 interface AvatarUploadProps {
-  avatarURL?: string;
+  avatarURL?: string; // Expect a single string
+  onAvatarUpdate: (newAvatarURL: string) => void; // Callback to notify parent of avatar change
 }
 
-const AvatarUpload: React.FC<AvatarUploadProps> = () => {
+const AvatarUpload: React.FC<AvatarUploadProps> = ({ avatarURL, onAvatarUpdate }) => {
   const [image, setImage] = useState<File | null>(null);
-  const [avatarURL, setAvatarURL] = useState<string>(''); // Expect a single string
   const [error, setError] = useState<string>('');
-  const fileInputRef = useRef<HTMLInputElement>(null); // Ref to access the file input
-
-  useEffect(() => {
-    // Fetch the current avatar URL when the component mounts
-    const fetchAvatar = async () => {
-      try {
-        const response = await fetch(`${API_BASE_URL}/api/auth/get-avatar`, {
-          method: 'GET',
-          credentials: 'include',
-        });
-
-        if (!response.ok) {
-          throw new Error('Failed to fetch avatar');
-        }
-
-        const data = await response.json();
-        setAvatarURL(data.avatarURL || ''); // Expect a single string
-      } catch (error: any) {
-        setError((error as Error).message);
-      }
-    };
-
-    fetchAvatar();
-  }, []);
+  const [loading, setLoading] = useState<boolean>(false);
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
@@ -43,32 +20,23 @@ const AvatarUpload: React.FC<AvatarUploadProps> = () => {
 
   const handleUpload = async () => {
     if (image) {
-      const formData = new FormData();
-      formData.append('avatar', image);
-
+      setLoading(true);
       try {
-        const response = await fetch(`${API_BASE_URL}/api/auth/upload-avatar`, {
-          method: 'POST',
-          body: formData,
-          credentials: 'include',
-        });
+        const response = await uploadAvatar(image);
 
         if (!response.ok) {
           throw new Error('Failed to upload avatar');
         }
 
         const data = await response.json();
-        setAvatarURL(data.avatarURL); // Expect a single string
+        onAvatarUpdate(data.avatarURL); // Notify parent of new avatar URL
       } catch (error: any) {
         setError((error as Error).message);
+      } finally {
+        setLoading(false);
       }
-    }
-  };
-
-  // Trigger file input click programmatically
-  const handleButtonClick = () => {
-    if (fileInputRef.current) {
-      fileInputRef.current.click();
+    } else {
+      setError('Please select an image to upload');
     }
   };
 
@@ -76,31 +44,26 @@ const AvatarUpload: React.FC<AvatarUploadProps> = () => {
     <div className="flex flex-col items-center">
       {avatarURL ? (
         <img src={avatarURL} width="128" height="128" alt="Avatar" />
-        ) : (
-          <div
+      ) : (
+        <div
           className="flex justify-center items-center bg-gray-300 text-gray-700"
           style={{ width: '128px', height: '128px' }}
-          >
-            Avatar
-          </div>
-        )}
+        >
+          Avatar
+        </div>
+      )}
       <input
         type="file"
-        ref={fileInputRef}
-        style={{ display: 'none' }}
         onChange={handleImageChange}
+        accept="image/*"
+        className="mb-2"
       />
-      <button 
-        onClick={handleButtonClick}
-        className="hover:underline hover:text-gray-900 text-gray-600 px-4 py-2 rounded"
-      >
-        Select Image
-      </button>
       <button 
         onClick={handleUpload}
         className="bg-gray-600 text-white px-4 py-2 rounded"
+        disabled={loading}
       >
-        Change Avatar
+        {loading ? 'Uploading...' : 'Change Avatar'}
       </button>
       {error && <p className="text-red-500 mt-2">{error}</p>}
     </div>

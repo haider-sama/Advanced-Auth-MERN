@@ -8,6 +8,8 @@ import {
 	sendVerificationEmail,
 	sendWelcomeEmail,
 } from "../utils/emailService";
+import { uploadImage } from "../utils/uploadImage";
+import multer from "multer";
 
 export async function register(req: Request, res: Response) {
   const { email, phoneNumber, password } = req.body;
@@ -263,3 +265,36 @@ export const resetPassword = async (req: Request, res: Response) => {
 		res.status(400).json({ success: false, message: error.message });
 	}
 };
+
+const storage = multer.memoryStorage();
+const upload = multer({
+  storage: storage,
+  limits: {
+    fileSize: 5 * 1024 * 1024, //5mb
+  },
+});
+
+export const uploadSingleAvatar = upload.single("avatar");
+
+export const uploadAvatar = async (req: Request, res: Response) => {
+  const userId = req.userId;
+
+  try {
+    if (!req.file) {
+      return res.status(400).json({ message: 'No file uploaded' });
+    }
+
+    const avatarURL = await uploadImage(req.file);
+    const user = await User.findByIdAndUpdate(userId, { avatarURL }, { new: true });
+
+    if (!user) {
+      return res.status(400).json({ message: 'User not found' });
+    }
+
+    res.json(user);
+  } catch (error) {
+    console.error('Error uploading avatar:', error);
+    res.status(500).json({ message: 'Error uploading image' });
+  }
+};
+

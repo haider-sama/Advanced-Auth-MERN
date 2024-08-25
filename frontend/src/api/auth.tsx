@@ -239,3 +239,25 @@ export const checkAuth = async (): Promise<AuthResponse> => {
 
   return res.json();
 };
+
+export const uploadAvatar = async (file: File): Promise<Response> => {
+  const formData = new FormData();
+  formData.append('avatar', file);
+
+  try {
+    const response = await fetch(`${API_BASE_URL}/api/auth/upload-avatar`, {
+      method: 'POST',
+      body: formData,
+      credentials: 'include', // Include cookies if needed for authentication
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to upload avatar');
+    }
+
+    return response;
+  } catch (error) {
+    console.error('Error uploading avatar:', error);
+    throw error;
+  }
+};

@@ -2,6 +2,7 @@ import express, { Request, Response } from "express";
 import { verifyToken } from "../middleware/auth";
 import * as controller from '../controllers/authController';
 import { check, validationResult } from "express-validator";
+import multer from "multer";
 
 const router = express.Router();
 
@@ -12,7 +13,6 @@ router.get("/validate-token", verifyToken, (req: Request, res: Response) => {
 });
 router.route("/users").get(verifyToken, controller.fetchAllUsers);
 router.route("/users/:id").get(verifyToken, controller.fetchUserById);
-// router.route("/get-avatar").get(verifyToken, controller.GetAvatar);
 
 // POST Methods
 router.route("/register").post([
@@ -38,6 +38,8 @@ router.route("/logout").post(controller.logout);
 router.route("/verify-email").post(controller.verifyEmail);
 router.route("/forgot-password").post(controller.forgotPassword);
 router.route("/reset-password/:token").post(controller.resetPassword);
+router.route("/upload-avatar")
+    .post(verifyToken, controller.uploadSingleAvatar, controller.uploadAvatar);
 
 // PUT Methods
 router.route("/profile")

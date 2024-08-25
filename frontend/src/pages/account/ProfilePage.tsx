@@ -4,6 +4,7 @@ import { fetchUserProfile, updateUserProfile } from '../../api/auth';
 import { useAppContext } from '../../context/AppContext';
 import toast from 'react-hot-toast';
 import { UserType } from '../../../../backend/src/shared/types';
+import AvatarUpload from '../../components/account/AvatarUpload';
 
 const ProfilePage = () => {
   const { isLoggedIn, userId } = useAppContext();
@@ -25,7 +26,7 @@ const ProfilePage = () => {
       if (!userId) {
         throw new Error('User ID is not defined');
       }
-      return fetchUserProfile(userId);
+      return fetchUserProfile();
     },
     {
       enabled: isLoggedIn && !!userId,
@@ -83,6 +84,10 @@ const ProfilePage = () => {
     (key) => editFields[key as keyof UserType] !== (user as any)[key]
   );
 
+  const handleAvatarUpdate = (newAvatarURL: string) => {
+    setUser((prevUser) => prevUser ? { ...prevUser, avatarURL: newAvatarURL } : null);
+  };
+
   if (isLoading) return <p>Loading...</p>;
   if (isError) return <p>Error loading profile.</p>;
 
@@ -94,7 +99,7 @@ const ProfilePage = () => {
           <div className="flex flex-col space-y-4">
             <div className="flex items-center space-x-8">
               <div className="flex-shrink-0">
-                {/* <AvatarUpload /> */}
+                <AvatarUpload avatarURL={user.avatarURL} onAvatarUpdate={handleAvatarUpdate} />
               </div>
               <div className="text-gray-900">
                 <label className="block mb-2">

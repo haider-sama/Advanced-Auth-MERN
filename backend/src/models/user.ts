@@ -9,7 +9,7 @@ const UserSchema = new mongoose.Schema({
     lastName: { type: String, required: false },
     city: { type: String, required: false },
     country: { type: String, required: false },
-    avatarURL: { type: String },
+    avatarURL: { type: String, default: "" },
     createdAt: { type: Date, required: true },
     lastOnline: { type: Date, required: true },
     phoneNumber: { type: Number, required: false },
