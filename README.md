@@ -1,7 +1,7 @@
 # Advanced Authentication System using MERN
 
 
-![Project Image](https://github.com/haider-sama/Advanced-Auth-MERN/blob/main/public/thumbnail.png)
+![Project Image](https://github.com/haider-sama/Advanced-Auth-MERN/blob/main/frontend/public/thumbnail.png)
 
 ## Features
 
