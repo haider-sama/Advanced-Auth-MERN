@@ -7,18 +7,37 @@ import ProfilePage from "./pages/account/ProfilePage"
 import RequestEmailVerification from "./pages/authentication/RequestEmailVerification"
 import ForgotPassword from "./pages/authentication/ForgotPassword"
 import ResetPassword from "./pages/authentication/ResetPassword"
-
+import { useAppContext } from "./context/AppContext"
+import ProtectedRoute from "./components/account/ProtectedRoute"
 
 function App() {
-  
+  const { isLoggedIn } = useAppContext();
   return (
     <>
     <Toaster />
       <BrowserRouter>
         <Routes>
-          {/* <Route path="/" element={<Layout><Home /></Layout>} /> */}
-          <Route path="/register" element={<AuthLayout><Register /></AuthLayout>} />
-          <Route path="/login" element={<AuthLayout><Login /></AuthLayout>} />
+          <Route path="/" element={<AuthLayout>hello there!</AuthLayout>} />
+          
+          <Route
+            path="/register"
+            element={
+              <ProtectedRoute
+                isAllowed={!isLoggedIn}
+                element={<AuthLayout><Register /></AuthLayout>}
+              />
+            }
+          />
+          <Route
+            path="/login"
+            element={
+              <ProtectedRoute
+                isAllowed={!isLoggedIn}
+                element={<AuthLayout><Login /></AuthLayout>}
+              />
+            }
+          />
+
           <Route path="/account" element={<AuthLayout><ProfilePage /></AuthLayout>} />
           {/* <Route path="/profile/:userId" element={<Layout><UserProfilePage /></Layout>} /> */}
 

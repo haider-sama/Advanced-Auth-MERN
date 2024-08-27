@@ -30,13 +30,13 @@ const ForgotPassword = () => {
 
 				{!isSubmitted ? (
 					<form onSubmit={handleSubmit}>
-						<p className="text-gray-300 mb-6 text-center">
+						<p className="text-gray-600 mb-6 text-center">
 							Enter your email address and we'll send you a link to reset your password.
 						</p>
 						<div className="mb-4">
 							<div className="relative">
 								<span className="absolute inset-y-0 left-0 pl-3 flex items-center">
-									<FiMail className="h-5 w-5 text-gray-400" />
+									<FiMail className="h-5 w-5 text-gray-600" />
 								</span>
 								<input
 									type="email"
@@ -44,7 +44,7 @@ const ForgotPassword = () => {
 									value={email}
 									onChange={(e) => setEmail(e.target.value)}
 									required
-									className="border rounded w-full py-2 px-2 font-normal"
+									className="border rounded w-full py-2 px-12 font-normal"
 								/>
 							</div>
 						</div>

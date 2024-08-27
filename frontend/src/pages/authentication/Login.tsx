@@ -95,24 +95,6 @@ const Login = () => {
               Login
             </button>
           </div>
-
-          <div className="flex items-center justify-center">
-            <div className="flex-grow border-t border-gray-300"></div>
-            <span className="mx-4 text-gray-500">OR</span>
-            <div className="flex-grow border-t border-gray-300"></div>
-          </div>
-
-          <div className="flex justify-center items-center mx-8">
-          <button
-            className="flex items-center justify-center text-gray-900 mt-4 bg-white hover:bg-primary border 
-          border-gray-300 hover:text-white focus:ring-4 focus:ring-gray-200 font-medium 
-            rounded-lg text-sm px-6 py-2 sm:px-8 sm:py-3 focus:outline-none w-full sm:w-auto"
-            >
-            <span className="mr-4">Continue with Google</span>
-            <img width="24" height="24" src="/img/google.png" alt="Google" />
-          </button>
-        </div>
-
       </form>
       </div>
     );
